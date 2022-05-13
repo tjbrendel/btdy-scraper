@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% if title %}
+            <title>Contender Series - {{ title }}</title>
+        {% else %}
+            <title>Contender Series</title>
+        {% endif %}
+    </head>
+
+    <body>
+        {% block content %}{% endblock %}
+    </body>
+</html>

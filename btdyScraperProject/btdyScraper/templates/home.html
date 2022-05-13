@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ series }} Season {{ season }} Results</h1>
+
+    <table border="1">
+        <tr>
+            <th>Race Date</th>
+            <th>Track ID</th>
+            <th>Lead Changes</th>
+            <th>Total Cautions</th>
+            <th>Caution Laps</th>
+            <th>Total Laps</th>
+        </tr>
+        {% for race in races %}
+            <tr>
+                <td>{{ race.subsession_id }}</td>
+                <td>{{ race.track_id }}</td>
+                <td>{{ race.lead_changes }}</td>
+                <td>{{ race.total_cautions }}</td>
+                <td>{{ race.caution_laps }}</td>
+                <td>{{ race.total_laps }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}
