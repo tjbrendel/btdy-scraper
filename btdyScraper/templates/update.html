@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-md-9">
+        <div class="content-section">
+            <h4>Update for {{ updateTarget.name }} for round {{ updateTarget.roundNum }}</h4>
+            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Record</button>
+            <hr />
+
+            <div class="modal fade" id="deleteModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete this record?</p>
+                        </div>
+            
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Return</button>
+                            <form action="{% url 'btdyScraper-dropRecord' updateTarget.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{% url 'btdyScraper-session' updateTarget.subsessionID.subsessionID %}">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Total Points:</label>
+                    <input class="form-control" id="finishPoints" value="{{ updateTarget.totalPoints }}" name="finishPoints" pattern="[0-9]{1,2}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Payout Amount:</label>
+                    <input class="form-control" id="payoutAmount" value="{{ updateTarget.payoutAmount }}" name="payoutAmount" pattern="[0-9]{1,2}" required>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                    {% if updateTarget.penalty == 1 %}
+                        <input class="form-check-input" type="checkbox" id="penalty" name="penalty" checked>
+                    {% else %}
+                        <input class="form-check-input" type="checkbox" id="penalty" name="penalty">
+                    {% endif %}
+                    <label class="form-check-label" for="penalty">Issue Penalty</label>
+                </div>
+
+                {% if updateTarget.penalty == 1 %}
+                    <div class="mb-3" id="penaltyNotesDiv">
+                {% else %}
+                    <div class="mb-3" id="penaltyNotesDiv" style="display:none;">
+                {% endif %}
+                
+                    <label class="form-label">Penalty Notes:</label>
+                    <textarea class="form-control" id="notes" name="notes">{{ updateTarget.penaltyNotes }}</textarea> 
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Bonus Notes:</label>
+                    <textarea class="form-control" id="bonusNotes" name="bonusNotes">{{ updateTarget.bonusNotes }}</textarea>
+                </div>
+                
+                <input type="hidden" name="next" value="{% url 'btdyScraper-session' updateTarget.subsessionID.subsessionID %}">
+
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(function () {
+                $("#penalty").on("click", function () {
+                    $("#penaltyNotesDiv").toggle("fast");
+                });
+            });
+        });
+    </script>
+{% endblock content %}
+
+{% block sidebar %}
+    <div class="col-md-3">
+        <div class="content-section">
+            <h6>Race Sessions</h6>
+            <table class="table table-sm small">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Track</th>
+                    </tr>
+                </thead>
+                {% if sessions != "No Races Yet!"%}
+                    {% for session in sessions %}
+                        <tr>
+                            <td class="text-center">{{ session.roundNum }}</td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.subsessionID %}">{{ session.trackName }}</a></td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>{{ sessions }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+{% endblock sidebar %}

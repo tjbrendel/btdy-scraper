@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-md-9">
+        <div class="content-section">
+            <h4>{{ selectedSession.series }} round {{ selectedSession.roundNum }} at {{ selectedSession.trackName }}</h4>
+            {% if user.is_authenticated %}
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Race</button>
+            {% endif %}
+
+            <div class="modal fade" id="deleteModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete the race data?</p>
+                        </div>
+            
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Return</button>
+                            <a class="btn btn-danger btn-sm" href="{% url 'btdyScraper-delete' selectedSession.subsessionID %}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-sm table-borderless small">
+                <tr>
+                    <td>Race Date: {{ selectedSession.raceDate }}</td>
+                    <td>Total Cautions: {{ selectedSession.totalCautions }}</td>
+                </tr>
+                <tr>
+                    <td>Total Laps: {{ selectedSession.totalLaps }}</td>
+                    <td>Caution Laps: {{ selectedSession.cautionLaps }}</td>
+                </tr>
+            </table>
+            <hr />
+            <table class="table table-sm table-striped small">
+                <thead>
+                    <tr>
+                        <th class="text-center">Pos</th>
+                        <th>Driver</th>
+                        <th class="text-center">Start Pos</th>
+                        <th class="text-center">Laps Lead</th>
+                        <th class="text-center">Inc</th>
+                        <th class="text-center">Fin Pts</th>
+                        <th class="text-center">LL Pts</th>
+                        <th class="text-center">MLL Pts</th>
+                        <th class="text-center">Pole Pts</th>
+                        <th class="text-center">Win Pts</th>
+                        <th class="text-center">Tot Pts</th>
+                        <th class="text-center">Payout</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                {% for result in selectedResults %}
+                <tr>
+                    <td class="text-center">{{ result.finishPosition }}</td>
+                    {% if user.is_authenticated %}
+                        <td><a class = "link-secondary" href = "{% url 'btdyScraper-update' result.id %}">{{ result.name }}</a></td>
+                    {% else %}
+                    <td>{{ result.name }}</td>
+                    {% endif %}
+                    <td class="text-center">{{ result.startPosition }}</td>
+                    <td class="text-center">{{ result.totalLapsLead }}</td>
+                    <td class="text-center">{{ result.incidents }}</td>
+                    <td class="text-center">{{ result.finishPoints }}</td>
+                    <td class="text-center">{{ result.lapsLeadPoints }}</td>
+                    <td class="text-center">{{ result.mostLapsLeadPoints }}</td>
+                    <td class="text-center">{{ result.polePoints }}</td>
+                    <td class="text-center">{{ result.winPoints }}</td>
+                    <td class="text-center table-primary">{{ result.totalPoints }}</td>
+                    <td class="text-center">${{ result.payoutAmount }}</td>
+                    {% if result.bonusNotes == '' %}
+                        <td>{{ result.penaltyNotes }}</td>
+                    {% else %}
+                        <td>{{ result.bonusNotes }}<br />{{ result.penaltyNotes }}</td>
+                    {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block sidebar %}
+    <div class="col-md-3">
+        <div class="content-section">
+            <h6>Race Sessions</h6>
+            <table class="table table-sm small">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Track</th>
+                    </tr>
+                </thead>
+                {% if sessions != "No Races Yet!"%}
+                    {% for session in sessions %}
+                        <tr>
+                            <td class="text-center">{{ session.roundNum }}</td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.subsessionID %}">{{ session.trackName }}</a></td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>{{ sessions }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+{% endblock sidebar %}

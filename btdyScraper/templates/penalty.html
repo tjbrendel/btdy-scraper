@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-md-9">
+        <div class="content-section">
+            <h4>Contender Series Penalty Report</h4>
+            <hr />
+            <table class="table table-sm table-striped small">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Track</th>
+                        <th>Name</th>
+                        <th>Penalty</th>
+                    </tr>
+                </thead>
+                {% for penalty in penalties %}
+                    <tr>
+                        <td>{{ penalty.roundNum }}</td>
+                        <td>{{ penalty.subsessionID.trackName }}</td>
+                        <td>{{ penalty.name }}</td>
+                        <td>{{ penalty.penaltyNotes }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="ratio ratio-16x9">
+            <iframe
+                src="http://metabase.tbandj.net/public/dashboard/20553158-cc5c-4f6e-8ad1-5e5a72d47364"
+                frameborder="0"
+                allowtransparency
+            ></iframe>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block sidebar %}
+    <div class="col-md-3">
+        <div class="content-section">
+            <h6>Race Sessions</h6>
+            <table class="table table-sm small">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Track</th>
+                    </tr>
+                </thead>
+                {% if sessions != "No Races Yet!"%}
+                    {% for session in sessions %}
+                        <tr>
+                            <td class="text-center">{{ session.roundNum }}</td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.subsessionID %}">{{ session.trackName }}</a></td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>{{ sessions }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+{% endblock sidebar %}

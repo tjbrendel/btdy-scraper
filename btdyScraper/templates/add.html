@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-md-9">
+        <div class="content-section">
+            <h4>Add Race Data</h4>
+            <hr />
+            <form method="POST" id="addForm">
+                {% csrf_token %}
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Subsession ID:</label>
+                    <input class="form-control" id="subsessionID" placeholder="Enter Subsession ID" name="subsessionID" pattern="[0-9]{8}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Round Number:</label>
+                    <select class="form-select" id="roundNum" name="roundNum" required>
+                        {% for round in rounds %}
+                            {% if round == currentRound %}
+                                <option selected>{{ round }}</option>
+                            {% else %}
+                                <option>{{ round }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+<!--                <div class="mb-3">
+                    <label class="form-label">Payout:</label>
+                    <select class="form-select" id="payout" name="payout" required>
+                        <option value="weekly">Weekly</option>
+                        <option value="crown">Crown Jewel</option>
+                        <option value="champion">Champion</option>
+                    </select>
+                </div>-->
+                
+                <div class="mb-3">
+                    <label class="form-label">Bonus:</label>
+                    <select class="form-select" id="bonus" name="bonus" required>
+                        <option value="none">None</option>
+                        <option value="incidents">Least Incidents</option>
+                        <option value="fastavg">Fastest Average</option>
+                        <option value="pole">Pole Position</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Series:</label>
+                    <input class="form-control" id="series" value="BTDY Contender Series" name="series" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Season:</label>
+                    <input class="form-control" id="season" value=1 name="season" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="btnFetch">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#btnFetch").click(function() {
+                // disable button
+                $(this).prop("disabled", true);
+                // add spinner to button
+                $(this).html(
+                `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> One Sec...`
+                );
+                $('#addForm').submit();
+            });
+        });
+    </script>
+{% endblock content %}
+
+{% block sidebar %}
+    <div class="col-md-3">
+        <div class="content-section">
+            <h6>Race Sessions</h6>
+            <table class="table table-sm small">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Track</th>
+                    </tr>
+                </thead>
+                {% if sessions != "No Races Yet!"%}
+                    {% for session in sessions %}
+                        <tr>
+                            <td class="text-center">{{ session.roundNum }}</td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.subsessionID %}">{{ session.trackName }}</a></td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>{{ sessions }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+{% endblock sidebar %}
