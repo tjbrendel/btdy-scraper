@@ -9,12 +9,15 @@ The web app and data base are hosted locally and can be found here, URL is subje
 ### User View Screen Shots
 
 #### Home Page
+The home page gives the overall season standings so far, and a list of completed race sessions to the right.
 ![contender-home](https://user-images.githubusercontent.com/28052084/175173607-0bc63344-4e68-4062-9956-53a17bda569a.png)
 
 #### Penalty Report Page
+The penalty report page displays any penalties that have been given to drives across all races.
 ![penalty-page](https://user-images.githubusercontent.com/28052084/175174581-8a9c4b8d-07a0-416f-94ce-c28421cc46c4.png)
 
 #### Race Session Results
+These pages display the results for any given race throughout the season.
 ![image](https://user-images.githubusercontent.com/28052084/175178569-8e0d99a8-6cdf-4033-84d9-ba532f50762b.png)
 
 ## Features
