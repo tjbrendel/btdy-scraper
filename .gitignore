@@ -1,6 +1,6 @@
 sensConfig/
-btdyScraper/__pycache__
-btdyScraper/migrations/__pycache__
-btdyScraperProject/__pycahce__
-users/__pycache__
-users/migrations/__pycache__
+btdyScraper/__pycache__/
+btdyScraper/migrations/__pycache__/
+btdyScraperProject/__pycahce__/
+users/__pycache__/
+users/migrations/__pycache__/
