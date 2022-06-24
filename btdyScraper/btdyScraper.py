@@ -3,6 +3,9 @@ import json
 import hashlib
 import base64
 
+with open("sensConfig/config.json") as file:
+    config = json.load(file)
+
 class race_driver:
     def __init__(self, driver_id, name, start_position, finish_position, total_laps_lead, incidents, finish_points, subsession_id, average_lap, laps_comp):
         self.driver_id = driver_id
@@ -96,8 +99,8 @@ def grabRaceData(subid):
         'Content-Type': 'application/json',
     }
     data = {
-        'email':'[IRACING EMAIL]',
-        'password':encode_pw('[IRACING EMAIL]', '[IRACING PASS]')
+        'email':config["IRACE_NAME"],
+        'password':encode_pw(config["IRACE_NAME"], config["IRACE_PASS"])
     }
     sess = requests.Session()
     sess.post('https://members-ng.iracing.com/auth', headers=headers, json=data, timeout=2.0)
