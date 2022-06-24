@@ -99,8 +99,8 @@ def grabRaceData(subid):
         'Content-Type': 'application/json',
     }
     data = {
-        'email':config["IRACE_NAME"],
-        'password':encode_pw(config["IRACE_NAME"], config["IRACE_PASS"])
+        'email':config["IRACE_USER"],
+        'password':encode_pw(config["IRACE_USER"], config["IRACE_PASS"])
     }
     sess = requests.Session()
     sess.post('https://members-ng.iracing.com/auth', headers=headers, json=data, timeout=2.0)

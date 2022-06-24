@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import json
+
+with open("sensConfig/config.json") as file:
+    config = json.load(file)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '[DJANGO SECRET KEY]'
+SECRET_KEY = config['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,11 +83,11 @@ WSGI_APPLICATION = 'btdyScraperProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'btdyScraper',
-        'USER': 'btdyScraperService',
-        'PASSWORD': 'Sn4k3F33t',
-        'HOST': '192.168.1.6',
-        'PORT': '3306',
+        'NAME': config["DB_NAME"],
+        'USER': config["DB_USER"],
+        'PASSWORD': config["DB_PASS"],
+        'HOST': config["DB_IP"],
+        'PORT': config["DB_PORT"],
     }
 }
 
