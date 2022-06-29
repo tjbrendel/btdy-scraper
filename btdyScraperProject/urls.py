@@ -25,7 +25,10 @@ urlpatterns = [
     path('register/', user_views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='passwordReset.html'), name='password_reset'),
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='passwordResetDone.html'), name='password_reset_done'),
+    path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='passwordResetConfirm.html'), name='password_reset_confirm'),
+    path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='passwordResetComplete.html'), name='password_reset_complete'),
     path('admin/', admin.site.urls),
-    path("favicon.ico/", RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
-    ),
+    path("favicon.ico/", RedirectView.as_view(url=staticfiles_storage.url("favicon.ico"))),
 ]
