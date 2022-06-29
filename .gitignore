@@ -4,3 +4,8 @@ btdyScraper/migrations/__pycache__/*.pyc
 btdyScraperProject/__pycache__/*.pyc
 users/__pycache__/*.pyc
 users/migrations/__pycache__/*.pyc
+
+/.vscode
+/btdyScraper/__pycache__
+/btdyScraperProject/__pycache__
+/users/__pycache__
