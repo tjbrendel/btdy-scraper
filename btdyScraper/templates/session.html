@@ -23,61 +23,65 @@
                 </div>
             </div>
 
-            <table class="table table-sm table-borderless small">
-                <tr>
-                    <td>Race Date: {{ selectedSession.raceDate }}</td>
-                    <td>Total Cautions: {{ selectedSession.totalCautions }}</td>
-                </tr>
-                <tr>
-                    <td>Total Laps: {{ selectedSession.totalLaps }}</td>
-                    <td>Caution Laps: {{ selectedSession.cautionLaps }}</td>
-                </tr>
-            </table>
-            <hr />
-            <table class="table table-sm table-striped small">
-                <thead>
+            <div class="table-responsive"></div>
+                <table class="table table-sm table-borderless small">
                     <tr>
-                        <th class="text-center">Pos</th>
-                        <th>Driver</th>
-                        <th class="text-center">Start Pos</th>
-                        <th class="text-center">Laps Lead</th>
-                        <th class="text-center">Inc</th>
-                        <th class="text-center">Fin Pts</th>
-                        <th class="text-center">LL Pts</th>
-                        <th class="text-center">MLL Pts</th>
-                        <th class="text-center">Pole Pts</th>
-                        <th class="text-center">Win Pts</th>
-                        <th class="text-center">Tot Pts</th>
-                        <th class="text-center">Payout</th>
-                        <th>Notes</th>
+                        <td>Race Date: {{ selectedSession.raceDate }}</td>
+                        <td>Total Cautions: {{ selectedSession.totalCautions }}</td>
                     </tr>
-                </thead>
-                {% for result in selectedResults %}
-                <tr>
-                    <td class="text-center">{{ result.finishPosition }}</td>
-                    {% if user.is_authenticated %}
-                        <td><a class = "link-secondary" href = "{% url 'btdyScraper-update' result.id %}">{{ result.name }}</a></td>
-                    {% else %}
-                    <td>{{ result.name }}</td>
-                    {% endif %}
-                    <td class="text-center">{{ result.startPosition }}</td>
-                    <td class="text-center">{{ result.totalLapsLead }}</td>
-                    <td class="text-center">{{ result.incidents }}</td>
-                    <td class="text-center">{{ result.finishPoints }}</td>
-                    <td class="text-center">{{ result.lapsLeadPoints }}</td>
-                    <td class="text-center">{{ result.mostLapsLeadPoints }}</td>
-                    <td class="text-center">{{ result.polePoints }}</td>
-                    <td class="text-center">{{ result.winPoints }}</td>
-                    <td class="text-center table-primary">{{ result.totalPoints }}</td>
-                    <td class="text-center">${{ result.payoutAmount }}</td>
-                    {% if result.bonusNotes == '' %}
-                        <td>{{ result.penaltyNotes }}</td>
-                    {% else %}
-                        <td>{{ result.bonusNotes }}<br />{{ result.penaltyNotes }}</td>
-                    {% endif %}
+                    <tr>
+                        <td>Total Laps: {{ selectedSession.totalLaps }}</td>
+                        <td>Caution Laps: {{ selectedSession.cautionLaps }}</td>
                     </tr>
-                {% endfor %}
-            </table>
+                </table>
+            </div>
+            <hr />
+            <div class="table-responsive">
+                <table class="table table-sm table-striped small">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Pos</th>
+                            <th>Driver</th>
+                            <th class="text-center">Start Pos</th>
+                            <th class="text-center">Laps Lead</th>
+                            <th class="text-center">Inc</th>
+                            <th class="text-center">Fin Pts</th>
+                            <th class="text-center">LL Pts</th>
+                            <th class="text-center">MLL Pts</th>
+                            <th class="text-center">Pole Pts</th>
+                            <th class="text-center">Win Pts</th>
+                            <th class="text-center">Tot Pts</th>
+                            <th class="text-center">Payout</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    {% for result in selectedResults %}
+                    <tr>
+                        <td class="text-center">{{ result.finishPosition }}</td>
+                        {% if user.is_authenticated %}
+                            <td><a class = "link-secondary" href = "{% url 'btdyScraper-update' result.id %}">{{ result.name }}</a></td>
+                        {% else %}
+                        <td>{{ result.name }}</td>
+                        {% endif %}
+                        <td class="text-center">{{ result.startPosition }}</td>
+                        <td class="text-center">{{ result.totalLapsLead }}</td>
+                        <td class="text-center">{{ result.incidents }}</td>
+                        <td class="text-center">{{ result.finishPoints }}</td>
+                        <td class="text-center">{{ result.lapsLeadPoints }}</td>
+                        <td class="text-center">{{ result.mostLapsLeadPoints }}</td>
+                        <td class="text-center">{{ result.polePoints }}</td>
+                        <td class="text-center">{{ result.winPoints }}</td>
+                        <td class="text-center table-primary">{{ result.totalPoints }}</td>
+                        <td class="text-center">${{ result.payoutAmount }}</td>
+                        {% if result.bonusNotes == '' %}
+                            <td>{{ result.penaltyNotes }}</td>
+                        {% else %}
+                            <td>{{ result.bonusNotes }}<br />{{ result.penaltyNotes }}</td>
+                        {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
     </div>
 {% endblock content %}

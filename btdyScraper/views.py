@@ -272,7 +272,6 @@ def penalty(request):
     
     return render(request, 'penalty.html', context)
 
-@login_required
 def dropWeeks(request):
     nameList = points.objects.values('name').distinct()
 

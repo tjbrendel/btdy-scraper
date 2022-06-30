@@ -9,65 +9,67 @@
             {% endif %}
             <hr />
             {% if seasonStandings != "No Races Yet!" %}
-            <table class="table table-sm table-striped small">
-                <thead>
-                    <tr>
-                        <th class="text-center">Pos.</th>
-                        <th class="text-center">Pos. Change</th>
-                        <th class="text-center">Gap to Leader</th>
-                        <th class="text-center">Next Spot</th>
-                        <!--<th class="text-center">Gap to Cutoff</th>-->
-                        <th>Driver</th>
-                        <th class="text-center">Points</th>
-                        <th class="text-center">Starts</th>
-                        <th class="text-center">Avg Start</th>
-                        <th class="text-center">Avg Finish</th>
-                        <th class="text-center">Poles</th>
-                        <th class="text-center">Wins</th>
-                        <th class="text-center">Top 5s</th>
-                        <th class="text-center">Top 10s</th>
-                        <th class="text-center">Incs.</th>
-                        <th class="text-center">Payout</th>
-                    </tr>
-                </thead>
-                {% for driver in seasonStandings %}
-                    <tr>
-                        <td class="text-center table-primary">{{ driver.position }}</td>
-                        <td class="text-center table-warning">
-                            {% if driver.posChange > 0 %}
-                                <span class="badge rounded-pill bg-success">+{{ driver.posChange }}</span>
-                            {% elif driver.posChange < 0 %}
-                                <span class="badge rounded-pill bg-danger">{{ driver.posChange }}</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-center table-warning">
-                            {% if driver.gapToLeader == 0 %}
-                                -
-                            {% else %}
-                                {{ driver.gapToLeader }}
-                            {% endif %}
-                        </td>
-                        <td class="text-center table-warning">
-                            {% if driver.position == 1 %}
-                                -
-                            {% else %}
-                                {{ driver.gapToNext }}
-                            {% endif %}    
-                        </td>
-                        <td>{{ driver.name }}</td>
-                        <td class="text-center">{{ driver.totalPoints }}</td>
-                        <td class="text-center">{{ driver.starts }}</td>
-                        <td class="text-center">{{ driver.avgStart|floatformat:1 }}</td>
-                        <td class="text-center">{{ driver.avgFinish|floatformat:1 }}</td>
-                        <td class="text-center">{{ driver.poles }}</td>
-                        <td class="text-center">{{ driver.wins }}</td>
-                        <td class="text-center">{{ driver.top5s }}</td>
-                        <td class="text-center">{{ driver.top10s }}</td>
-                        <td class="text-center">{{ driver.incidents }}</td>
-                        <td class="text-center">${{ driver.payout }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped small">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Pos.</th>
+                            <th class="text-center">Pos. Change</th>
+                            <th class="text-center">Gap to Leader</th>
+                            <th class="text-center">Next Spot</th>
+                            <!--<th class="text-center">Gap to Cutoff</th>-->
+                            <th>Driver</th>
+                            <th class="text-center">Points</th>
+                            <th class="text-center">Starts</th>
+                            <th class="text-center">Avg Start</th>
+                            <th class="text-center">Avg Finish</th>
+                            <th class="text-center">Poles</th>
+                            <th class="text-center">Wins</th>
+                            <th class="text-center">Top 5s</th>
+                            <th class="text-center">Top 10s</th>
+                            <th class="text-center">Incs.</th>
+                            <th class="text-center">Payout</th>
+                        </tr>
+                    </thead>
+                    {% for driver in seasonStandings %}
+                        <tr>
+                            <td class="text-center table-primary">{{ driver.position }}</td>
+                            <td class="text-center table-warning">
+                                {% if driver.posChange > 0 %}
+                                    <span class="badge rounded-pill bg-success">+{{ driver.posChange }}</span>
+                                {% elif driver.posChange < 0 %}
+                                    <span class="badge rounded-pill bg-danger">{{ driver.posChange }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center table-warning">
+                                {% if driver.gapToLeader == 0 %}
+                                    -
+                                {% else %}
+                                    {{ driver.gapToLeader }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center table-warning">
+                                {% if driver.position == 1 %}
+                                    -
+                                {% else %}
+                                    {{ driver.gapToNext }}
+                                {% endif %}    
+                            </td>
+                            <td>{{ driver.name }}</td>
+                            <td class="text-center">{{ driver.totalPoints }}</td>
+                            <td class="text-center">{{ driver.starts }}</td>
+                            <td class="text-center">{{ driver.avgStart|floatformat:1 }}</td>
+                            <td class="text-center">{{ driver.avgFinish|floatformat:1 }}</td>
+                            <td class="text-center">{{ driver.poles }}</td>
+                            <td class="text-center">{{ driver.wins }}</td>
+                            <td class="text-center">{{ driver.top5s }}</td>
+                            <td class="text-center">{{ driver.top10s }}</td>
+                            <td class="text-center">{{ driver.incidents }}</td>
+                            <td class="text-center">${{ driver.payout }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
         {% else %}
             <h3>{{ seasonStandings }}</h3>
         {% endif %}
