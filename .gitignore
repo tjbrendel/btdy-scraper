@@ -1,7 +1,3 @@
 /.vscode
-/btdyScraper/__pycache__
-/btdyScraperProject/__pycache__
-/users/__pycache__
-/btdyScraper/migrations/__pycache__
-/users/migrations/__pycache__
 /sensConfig
+__pycache__/
