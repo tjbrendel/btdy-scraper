@@ -5,32 +5,26 @@
         <div class="content-section">
             <h4>Contender Series Penalty Report</h4>
             <hr />
-            <table class="table table-sm table-striped small">
-                <thead>
-                    <tr>
-                        <th>Round</th>
-                        <th>Track</th>
-                        <th>Name</th>
-                        <th>Penalty</th>
-                    </tr>
-                </thead>
-                {% for penalty in penalties %}
-                    <tr>
-                        <td>{{ penalty.roundNum }}</td>
-                        <td>{{ penalty.subsessionID.trackName }}</td>
-                        <td>{{ penalty.name }}</td>
-                        <td>{{ penalty.penaltyNotes }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-
-        <div class="ratio ratio-16x9">
-            <iframe
-                src="http://metabase.tbandj.net/public/dashboard/20553158-cc5c-4f6e-8ad1-5e5a72d47364"
-                frameborder="0"
-                allowtransparency
-            ></iframe>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped small">
+                    <thead>
+                        <tr>
+                            <th>Round</th>
+                            <th>Track</th>
+                            <th>Name</th>
+                            <th>Penalty</th>
+                        </tr>
+                    </thead>
+                    {% for penalty in penalties %}
+                        <tr>
+                            <td>{{ penalty.roundNum }}</td>
+                            <td>{{ penalty.subsessionID.trackName }}</td>
+                            <td>{{ penalty.name }}</td>
+                            <td>{{ penalty.penaltyNotes }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
     </div>
 {% endblock content %}

@@ -6,24 +6,26 @@
             <h4>Contender Series Dropped Races</h4>
             <hr />
             
-            <table class="table table-sm table-striped small">
-                <thead>
-                    <tr>
-                        <th>Driver</th>
-                        <th class="text-center">Round</th>
-                        <th>Track</th>
-                        <th class="text-center">Points Dropped</th>
-                    </tr>
-                </thead>
-                {% for race in droppedRaces %}
-                    <tr>
-                        <td>{{ race.name }}</td>
-                        <td class="text-center">{{ race.roundNum }}</td>
-                        <td>{{ race.subsessionID.trackName }}</td>
-                        <td class="text-center">{{ race.totalPoints }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped small">
+                    <thead>
+                        <tr>
+                            <th>Driver</th>
+                            <th class="text-center">Round</th>
+                            <th>Track</th>
+                            <th class="text-center">Points Dropped</th>
+                        </tr>
+                    </thead>
+                    {% for race in droppedRaces %}
+                        <tr>
+                            <td>{{ race.name }}</td>
+                            <td class="text-center">{{ race.roundNum }}</td>
+                            <td>{{ race.subsessionID.trackName }}</td>
+                            <td class="text-center">{{ race.totalPoints }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
     </div>
 {% endblock content %}
