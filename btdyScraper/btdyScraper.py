@@ -51,48 +51,48 @@ def encode_pw(username, password):
 
     return hashInBase64
 
-# #def payout(level, finish):
-# #    if level == "champion":
-#         return {
-#             1: 12,
-#             2: 10,
-#             3: 8,
-#             4: 6,
-#             5: 5,
-#             6: 3,
-#             7: 2,
-#             8: 2,
-#             9: 1,
-#             10: 1
-#         }.get(finish, 0)
-#     if level == "crown":
-#         return {
-# 			1: 20, 
-# 			2: 15,
-# 			3: 10,
-# 			4: 8,
-# 			5: 5,
-# 			6: 4,
-# 			7: 4,
-# 			8: 3,
-# 			9: 2,
-# 			10: 2,
-#             11: 1,
-#             12: 1
-# 		}.get(finish, 0)
-#     if level == "weekly":
-#         return {
-# 			1: 12, 
-# 			2: 10,
-# 			3: 8,
-# 			4: 6,
-# 			5: 5,
-# 			6: 3,
-# 			7: 2,
-# 			8: 2,
-#             9: 1,
-#             10: 1
-# 		}.get(finish, 0)
+def payout(level, finish):
+    if level == "champion":
+        return {
+            1: 12,
+            2: 10,
+            3: 8,
+            4: 6,
+            5: 5,
+            6: 3,
+            7: 2,
+            8: 2,
+            9: 1,
+            10: 1
+        }.get(finish, 0)
+    if level == "crown":
+        return {
+ 		    1: 20, 
+ 		    2: 15,
+ 		    3: 10,
+ 		    4: 8,
+ 		    5: 5,
+ 		    6: 4,
+ 			7: 4,
+ 			8: 3,
+ 			9: 2,
+ 			10: 2,
+            11: 1,
+            12: 1
+ 		}.get(finish, 0)
+    if level == "weekly":
+        return {
+ 			1: 12, 
+ 			2: 10,
+ 			3: 8,
+ 			4: 6,
+ 			5: 5,
+ 			6: 3,
+ 			7: 2,
+ 			8: 2,
+            9: 1,
+            10: 1
+ 		}.get(finish, 0)
 
 def grabRaceData(subid):
     headers = {
@@ -128,7 +128,7 @@ def raceScraper(raceData, subid):
 
     return current_session
 
-def resultsScraper(raceData, subid):
+def resultsScraper(raceData, subid, payout_level, series):
     for i, dic in enumerate(raceData['session_results']):
         if dic['simsession_name'] == 'RACE':
             raceKey = i
@@ -163,10 +163,15 @@ def resultsScraper(raceData, subid):
         if startPosition == 1:
             current_driver.pole_points = 1
             current_driver.pole_flag = 1
-                
-        if finishPosition == 1:
-            current_driver.win_points = 3
-            current_driver.win_flag = 1
+
+        if series == "BTDY Contender Series":
+            if finishPosition == 1:
+                current_driver.win_points = 5
+                current_driver.win_flag = 1
+        else:
+            if finishPosition == 1:
+                current_driver.win_points = 0
+                current_driver.win_flag = 1
 
         if finishPosition <= 5:
             current_driver.top_five_flag = 1
@@ -174,8 +179,9 @@ def resultsScraper(raceData, subid):
         if finishPosition <= 10:
             current_driver.top_ten_flag = 1
 
-#        payout_amount = payout(payout_level, current_driver.finish_position)
-#        current_driver.payout_amount = payout_amount
+        if payout_level != "none":
+            payout_amount = payout(payout_level, current_driver.finish_position)
+            current_driver.payout_amount = payout_amount
 
         raceResults.append(current_driver)
 

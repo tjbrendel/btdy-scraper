@@ -13,26 +13,53 @@
                 </div>
                 
                 <div class="mb-3">
-                    <label class="form-label">Round Number:</label>
-                    <select class="form-select" id="roundNum" name="roundNum" required>
-                        {% for round in rounds %}
-                            {% if round == currentRound %}
-                                <option selected>{{ round }}</option>
-                            {% else %}
-                                <option>{{ round }}</option>
-                            {% endif %}
-                        {% endfor %}
+                    <label class="form-label">Series:</label>
+                    <select class="form-select" id="series" name="series" required>
+                        <option value="BTDY Contender Series">BTDY Contender Series</option>
+                        <option value="BTDY Premier Series">BTDY Premier Series</option>
                     </select>
                 </div>
 
-<!--                <div class="mb-3">
+                <div class="mb-3">
+                    <label class="form-label">Season:</label>
+                    <input class="form-control" id="season" name="season" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Round Number:</label>
+                    <select class="form-select" id="roundNum" name="roundNum" required>
+                            <option selected>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                            <option>11</option>
+                            <option>12</option>
+                            <option>13</option>
+                            <option>14</option>
+                            <option>15</option>
+                            <option>16</option>
+                            <option>17</option>
+                            <option>18</option>
+                            <option>19</option>
+                            <option>20</option>
+                    </select>
+                </div>
+
+                <div class="mb-3" id="payoutField">
                     <label class="form-label">Payout:</label>
-                    <select class="form-select" id="payout" name="payout" required>
+                    <select class="form-select" id="payout" name="payout">
+                        <option value="none" selected>None</option>
                         <option value="weekly">Weekly</option>
                         <option value="crown">Crown Jewel</option>
                         <option value="champion">Champion</option>
                     </select>
-                </div>-->
+                </div>
                 
                 <div class="mb-3">
                     <label class="form-label">Bonus:</label>
@@ -43,16 +70,6 @@
                         <option value="pole">Pole Position</option>
                     </select>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Series:</label>
-                    <input class="form-control" id="series" value="BTDY Contender Series" name="series" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Season:</label>
-                    <input class="form-control" id="season" value=1 name="season" required>
-                </div>
                 
                 <button type="submit" class="btn btn-primary" id="btnFetch">Submit</button>
             </form>
@@ -61,6 +78,8 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
+            $("#payoutField").hide()
+
             $("#btnFetch").click(function() {
                 // disable button
                 $(this).prop("disabled", true);
@@ -70,6 +89,20 @@
                 );
                 $('#addForm').submit();
             });
+
+            $("#series").change(function(){
+                $("#payoutField").toggle("fast")
+                
+                setTimeout(function(){
+                    $("#payout").val('none').change()
+                }, 200)
+                
+//                if($(this).val() == "BTDY Contender Series"){
+//                    $("#payoutField").hide()
+//                } else {
+//                    $("#payoutField").show()
+//                }
+            })
         });
     </script>
 {% endblock content %}
@@ -77,7 +110,7 @@
 {% block sidebar %}
     <div class="col-md-3">
         <div class="content-section">
-            <h6>Race Sessions</h6>
+            <h6>Contender Race Sessions</h6>
             <table class="table table-sm small">
                 <thead>
                     <tr>
@@ -87,10 +120,38 @@
                 </thead>
                 {% if sessions != "No Races Yet!"%}
                     {% for session in sessions %}
-                        <tr>
-                            <td class="text-center">{{ session.roundNum }}</td>
-                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.subsessionID %}">{{ session.trackName }}</a></td>
-                        </tr>
+                        {% if session.series == "BTDY Contender Series" %}
+                            <tr>
+                                <td class="text-center">{{ session.roundNum }}</td>
+                                <td><a class="link-secondary" href="{% url 'btdyScraper-session' 5189 session.subsessionID %}">{{ session.trackName }}</a></td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>{{ sessions }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+
+        <div class="content-section">
+            <h6>Premier Race Sessions</h6>
+            <table class="table table-sm small">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Track</th>
+                    </tr>
+                </thead>
+                {% if sessions != "No Races Yet!"%}
+                    {% for session in sessions %}
+                        {% if session.series == "BTDY Premier Series" %}    
+                            <tr>
+                                <td class="text-center">{{ session.roundNum }}</td>
+                                <td><a class="link-secondary" href="{% url 'btdyScraper-session' 4333 session.subsessionID %}">{{ session.trackName }}</a></td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 {% else %}
                     <tr>
