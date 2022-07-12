@@ -6,120 +6,55 @@ from django.db.models import Avg, Max, Sum, Count
 from django.contrib.auth.decorators import login_required
 
 def home(request):
-    maxRound = points.objects.aggregate(Max('roundNum')).get('roundNum__max')
-    if(maxRound is None):
-        context = {
-            'sessions':"No Races Yet!",
-            'seasonStandings':"No Races Yet!",
+    context = {
+            'title': 'Home'
         }
 
-        return render(request, 'home.html', context)
-    else:
-        prevRound = maxRound - 1
-        sessionPoints = (
-            points.objects.values('name')
-            .annotate(
-                totalPoints = Sum('totalPoints'),
-                starts = Count('startPosition'),
-                avgStart = Avg('startPosition'),
-                avgFinish = Avg('finishPosition'),
-                poles = Sum('poleFlag'),
-                wins = Sum('winFlag'),
-                top5s = Sum('topFiveFlag'),
-                top10s = Sum('topTenFlag'),
-                incidents = Sum('incidents'),
-                payout = Sum('payoutAmount')
-            )
-            .order_by('-totalPoints', 'avgFinish')
-        )
-        prevSession = (
-            points.objects
-            .values('name')
-            .filter(roundNum__lte = prevRound)
-            .annotate(
-                totalPoints = Sum('totalPoints'),
-                avgFinish = Avg('finishPosition')
-            )
-            .order_by('-totalPoints', 'avgFinish')
-        )
-
-        if maxRound > 10:
-            for pointsRow in sessionPoints:
-                dropPoints = points.objects.all().filter(name = pointsRow['name']).order_by('totalPoints')[:2]
-
-                totalDrop = 0
-                for row in dropPoints:
-                    totalDrop = totalDrop + row.totalPoints
-                
-                pointsRow['totalPoints'] -= totalDrop
-
-            for prevPointsRow in prevSession:
-                prevDropPoints = points.objects.all().filter(name = prevPointsRow['name'], roundNum__lte = prevRound).order_by('totalPoints')[:2]
-
-                prevTotalDrop = 0
-                for row in prevDropPoints:
-                    prevTotalDrop = prevTotalDrop + row.totalPoints
-                
-                prevPointsRow['totalPoints'] -= prevTotalDrop
-            
-            sessionPoints = sorted(sessionPoints, key=lambda o: o['totalPoints'], reverse=True)
-            prevSession = sorted(prevSession, key=lambda o: o['totalPoints'], reverse=True)
-
-        seasonStandings = sessionStandings(sessionPoints, prevSession)
-
-        context = {
-            'sessions':raceSession.objects.all(),
-            'seasonStandings':seasonStandings,
-            'maxRound': maxRound
-        }
-
-        return render(request, 'home.html', context)
+    return render(request, 'home.html', context)
 
 @login_required
 def add(request):
-    rounds = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     currentRound = points.objects.aggregate(Max('roundNum')).get('roundNum__max')
 
     if request.method == 'POST':
         subID = request.POST['subsessionID']
-#        payout = request.POST['payout']
+        payout = request.POST['payout']
         series = request.POST['series']
         season = request.POST['season']
         roundNum = request.POST['roundNum']
         bonus = request.POST['bonus']
         raceData = grabRaceData(subID)
         subIDCheck = raceSession.objects.filter(subsessionID=subID)
+
+        if series == 'BTDY Contender Series':
+            leagueID = 5189
+        elif series == 'BTDY Premier Series':
+            leagueID = 4333
         
         if 'error' in raceData.keys():
-            messages.warning(request, 'No Subsession ID was found, check the number you entered.')
+            messages.warning(request, 'No Subsession ID was found! check the number you entered.')
             context = {
                 'title':'Add a Race',
-                'sessions':raceSession.objects.all(),
-                'rounds':rounds,
-                'currentRound':currentRound,
+                'sessions':raceSession.objects.all().order_by('roundNum'),
             }
             return render(request, 'add.html', context)
         elif subIDCheck:
             messages.warning(request, 'Subsession ID already exists! Enter a different one.')
             context = {
                 'title':'Add a Race',
-                'sessions':raceSession.objects.all(),
-                'rounds':rounds,
-                'currentRound':currentRound,
+                'sessions':raceSession.objects.all().order_by('roundNum'),
             }
             return render(request, 'add.html', context)
-        elif raceData['league_id'] != 5189:
-            messages.warning(request, 'Not a BTDY Contender Series Subsession ID. Please check your number!')
+        elif raceData['league_id'] != leagueID:
+            messages.warning(request, 'Not a BTDY Series Subsession ID! Please check your number.')
             context = {
                 'title':'Add a Race',
-                'sessions':raceSession.objects.all(),
-                'rounds':rounds,
-                'currentRound':currentRound,
+                'sessions':raceSession.objects.all().order_by('roundNum'),
             }
             return render(request, 'add.html', context)
         else:    
             scrapedSession = raceScraper(raceData, subID)
-            raceResults = resultsScraper(raceData, subID)
+            raceResults = resultsScraper(raceData, subID, payout, series)
             raceSubmit = raceSession(
                 subsessionID = scrapedSession.subsession_id, 
                 raceDate = scrapedSession.race_date,
@@ -172,38 +107,32 @@ def add(request):
             if bonus == "incidents":
                 bonusDriver = points.objects.filter(subsessionID=subID, lapsComp=scrapedSession.total_laps).order_by("incidents", "finishPosition").first()
                 bonusDriver.bonusNotes = "Least Incidents"
-                bonusDriver.payoutAmount += 5
+                bonusDriver.payoutAmount += 3
                 bonusDriver.save()
             elif bonus == "fastavg":
                 bonusDriver = points.objects.filter(subsessionID=subID, lapsComp=scrapedSession.total_laps).order_by("avgLap", "finishPosition").first()
                 bonusDriver.bonusNotes = "Fastest Avg"
-                bonusDriver.payoutAmount += 5
+                bonusDriver.payoutAmount += 3
                 bonusDriver.save()
             elif bonus == "pole":
                 bonusDriver = points.objects.filter(subsessionID=subID, startPosition=1).first()
                 bonusDriver.bonusNotes = "Pole"
-                bonusDriver.payoutAmount += 5
+                bonusDriver.payoutAmount += 3
                 bonusDriver.save()
 
             messages.success(request, f'Success! Race data entered for {scrapedSession.subsession_id} at {scrapedSession.track_name}. Make any edits below.')
-            return redirect('btdyScraper-session', subID)
+            return redirect('btdyScraper-session', leagueID, subID)
     elif(currentRound is None):
-        currentRound = 1
         context = {
             'title':'Add a Race',
             'sessions':"No Races Yet!",
-            'rounds':rounds,
-            'currentRound':currentRound,
         }
 
         return render(request, 'add.html', context)
     else:
-        currentRound += 1
         context = {
             'title':'Add a Race',
-            'sessions':raceSession.objects.all(),
-            'rounds':rounds,
-            'currentRound':currentRound,
+            'sessions':raceSession.objects.all().order_by('roundNum'),
         }
         return render(request, 'add.html', context)
 
@@ -215,20 +144,35 @@ def delete(request, subsessionID):
     messages.success(request, f'Success! Race data deleted for {subsessionID}')
     return redirect('btdyScraper-home')
 
-def session(request, subsessionID):
-    roundNum = raceSession.objects.values('roundNum').filter(subsessionID=subsessionID).first()
+def session(request, leagueID, subsessionID):
+    if leagueID == 5189:
+        #contender
+        seriesFilter = 'BTDY Contender Series'
+    elif leagueID == 4333:
+        #premier
+        seriesFilter = 'BTDY Premier Series'
+    
+    roundNum = raceSession.objects.values('roundNum').filter(subsessionID=subsessionID,series=seriesFilter).first()
     title = f"Round {roundNum['roundNum']}"
 
     context = {
-        'selectedSession':raceSession.objects.filter(subsessionID=subsessionID).first(),
-        'selectedResults':points.objects.filter(subsessionID=subsessionID),
-        'sessions':raceSession.objects.all(),
+        'selectedSession':raceSession.objects.filter(subsessionID=subsessionID, series=seriesFilter).first(),
+        'selectedResults':points.objects.filter(subsessionID=subsessionID, subsessionID__series=seriesFilter),
+        'sessions':raceSession.objects.filter(series=seriesFilter).all().order_by('roundNum'),
         'title': title,
+        'leagueID': leagueID
     }
     return render(request, 'session.html', context)
 
 @login_required
-def update(request, id):
+def update(request, leagueID, id):
+    if leagueID == 5189:
+        #contender
+        seriesFilter = 'BTDY Contender Series'
+    elif leagueID == 4333:
+        #premier
+        seriesFilter = 'BTDY Premier Series'
+    
     if request.method == 'POST':
         finishPoints = request.POST['finishPoints']
         payoutAmount = request.POST['payoutAmount']
@@ -259,15 +203,25 @@ def update(request, id):
         updateTarget = points.objects.get(id=id)
         context = {
             'updateTarget':updateTarget,
-            'sessions':raceSession.objects.all(),
+            'sessions':raceSession.objects.filter(series=seriesFilter).all().order_by('roundNum'),
+            'leagueID': leagueID
         }
         return render(request, 'update.html', context)
 
-def penalty(request):
+def penalty(request, leagueID):
+    if leagueID == 5189:
+        #contender
+        seriesFilter = 'BTDY Contender Series'
+    elif leagueID == 4333:
+        #premier
+        seriesFilter = 'BTDY Premier Series'
+
     context = {
-        'penalties':points.objects.filter(penalty=1).order_by('-roundNum'),
-        'sessions':raceSession.objects.all(),
-        'title': 'Penalty Report'
+        'penalties':points.objects.filter(penalty=1, subsessionID__series = seriesFilter).order_by('-roundNum'),
+        'sessions':raceSession.objects.filter(series = seriesFilter).all().order_by('roundNum'),
+        'title': 'Penalty Report',
+        'series': raceSession.objects.filter(series = seriesFilter).values("series").first(),
+        'leagueID': leagueID
     }
     
     return render(request, 'penalty.html', context)
@@ -284,7 +238,7 @@ def dropWeeks(request):
     context = {
         'droppedRaces':dropRaces,
         'title':'Dropped Races',
-        'sessions':raceSession.objects.all(),
+        'sessions':raceSession.objects.all().order_by('roundNum'),
     }
 
     return render(request, 'droppedRaces.html', context)
@@ -297,3 +251,94 @@ def deleteRecord(request, id):
 
     messages.success(request, f'Success! Record deleted!')
     return redirect(next)
+
+def seasonStandings(request, leagueID):
+    if leagueID == 5189:
+        #contender
+        seriesFilter = 'BTDY Contender Series'
+    elif leagueID == 4333:
+        #premier
+        seriesFilter = 'BTDY Premier Series'
+
+    maxRound = points.objects.filter(subsessionID__series = seriesFilter).aggregate(Max('roundNum')).get('roundNum__max')
+    if(maxRound is None):
+        context = {
+            'sessions':"No Races Yet!",
+            'seasonStandings':"No Races Yet!",
+            'series': raceSession.objects.filter(series = seriesFilter).values("series").first()
+        }
+
+        return render(request, 'seasonStandings.html', context)
+    else:
+        prevRound = maxRound - 1
+        sessionPoints = (
+            points.objects.values('name')
+            .filter(subsessionID__series = seriesFilter)
+            .annotate(
+                totalPoints = Sum('totalPoints'),
+                starts = Count('startPosition'),
+                avgStart = Avg('startPosition'),
+                avgFinish = Avg('finishPosition'),
+                poles = Sum('poleFlag'),
+                wins = Sum('winFlag'),
+                top5s = Sum('topFiveFlag'),
+                top10s = Sum('topTenFlag'),
+                incidents = Sum('incidents'),
+                payout = Sum('payoutAmount')
+            )
+            .order_by('-totalPoints', 'avgFinish')
+        )
+        prevSession = (
+            points.objects
+            .values('name')
+            .filter(
+                roundNum__lte = prevRound,
+                subsessionID__series = seriesFilter
+            )
+            .annotate(
+                totalPoints = Sum('totalPoints'),
+                avgFinish = Avg('finishPosition')
+            )
+            .order_by('-totalPoints', 'avgFinish')
+        )
+
+        if maxRound > 10:
+            for pointsRow in sessionPoints:
+                dropPoints = points.objects.filter(
+                    name = pointsRow['name'], 
+                    subsessionID__series = seriesFilter
+                ).all().order_by('totalPoints')[:2]
+
+                totalDrop = 0
+                for row in dropPoints:
+                    totalDrop = totalDrop + row.totalPoints
+                
+                pointsRow['totalPoints'] -= totalDrop
+
+            for prevPointsRow in prevSession:
+                prevDropPoints = points.objects.filter(
+                    name = prevPointsRow['name'], 
+                    roundNum__lte = prevRound, 
+                    subsessionID__series = seriesFilter
+                ).all().order_by('totalPoints')[:2]
+
+                prevTotalDrop = 0
+                for row in prevDropPoints:
+                    prevTotalDrop = prevTotalDrop + row.totalPoints
+                
+                prevPointsRow['totalPoints'] -= prevTotalDrop
+            
+            sessionPoints = sorted(sessionPoints, key=lambda o: o['totalPoints'], reverse=True)
+            prevSession = sorted(prevSession, key=lambda o: o['totalPoints'], reverse=True)
+
+        seasonStandings = sessionStandings(sessionPoints, prevSession)
+
+        context = {
+            'sessions':raceSession.objects.filter(series = seriesFilter).all().order_by('roundNum'),
+            'seasonStandings':seasonStandings,
+            'maxRound': maxRound,
+            'series': raceSession.objects.filter(series = seriesFilter).values("series").first(),
+            'leagueID': leagueID
+        }
+
+        return render(request, 'seasonStandings.html', context)

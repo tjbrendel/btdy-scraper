@@ -18,7 +18,7 @@
                             <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Return</button>
                             <form action="{% url 'btdyScraper-dropRecord' updateTarget.id %}" method="POST">
                                 {% csrf_token %}
-                                <input type="hidden" name="next" value="{% url 'btdyScraper-session' updateTarget.subsessionID.subsessionID %}">
+                                <input type="hidden" name="next" value="{% url 'btdyScraper-session' leagueID updateTarget.subsessionID.subsessionID %}">
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                             </form>
                         </div>
@@ -62,7 +62,7 @@
                     <textarea class="form-control" id="bonusNotes" name="bonusNotes">{{ updateTarget.bonusNotes }}</textarea>
                 </div>
                 
-                <input type="hidden" name="next" value="{% url 'btdyScraper-session' updateTarget.subsessionID.subsessionID %}">
+                <input type="hidden" name="next" value="{% url 'btdyScraper-session' leagueID updateTarget.subsessionID.subsessionID %}">
 
                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>
@@ -95,7 +95,7 @@
                     {% for session in sessions %}
                         <tr>
                             <td class="text-center">{{ session.roundNum }}</td>
-                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.subsessionID %}">{{ session.trackName }}</a></td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' leagueID session.subsessionID %}">{{ session.trackName }}</a></td>
                         </tr>
                     {% endfor %}
                 {% else %}

@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <div class="table-responsive"></div>
+            <div class="table-responsive">
                 <table class="table table-sm table-borderless small">
                     <tr>
                         <td>Race Date: {{ selectedSession.raceDate }}</td>
@@ -59,7 +59,7 @@
                     <tr>
                         <td class="text-center">{{ result.finishPosition }}</td>
                         {% if user.is_authenticated %}
-                            <td><a class = "link-secondary" href = "{% url 'btdyScraper-update' result.id %}">{{ result.name }}</a></td>
+                            <td><a class = "link-secondary" href = "{% url 'btdyScraper-update' leagueID result.id %}">{{ result.name }}</a></td>
                         {% else %}
                         <td>{{ result.name }}</td>
                         {% endif %}
@@ -101,7 +101,7 @@
                     {% for session in sessions %}
                         <tr>
                             <td class="text-center">{{ session.roundNum }}</td>
-                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.subsessionID %}">{{ session.trackName }}</a></td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' leagueID session.subsessionID %}">{{ session.trackName }}</a></td>
                         </tr>
                     {% endfor %}
                 {% else %}

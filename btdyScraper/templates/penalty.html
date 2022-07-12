@@ -3,7 +3,7 @@
 {% block content %}
     <div class="col-md-9">
         <div class="content-section">
-            <h4>Contender Series Penalty Report</h4>
+            <h4>{{ series.series }} Penalty Report</h4>
             <hr />
             <div class="table-responsive">
                 <table class="table table-sm table-striped small">
@@ -44,7 +44,7 @@
                     {% for session in sessions %}
                         <tr>
                             <td class="text-center">{{ session.roundNum }}</td>
-                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.subsessionID %}">{{ session.trackName }}</a></td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' leagueID session.subsessionID %}">{{ session.trackName }}</a></td>
                         </tr>
                     {% endfor %}
                 {% else %}
