@@ -1,35 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="col-md-12">
+    <div class="col-md-9">
         <div class="content-section">
             <h4>About</h4>
             <hr />
             <p>This site acts as the points system of the BTDY iRacing league. Both series points will be stored here and should be considered the source of truth for anything points related.</p>
 
-            <h5>Features</h5>
-            <p><em>Season Standings</em></p>
-            <p>Under each series menu item you can view the season standings of the most current season. Points are calculated according to the rules layed out in the official BTDY rules documents:
-                <ul>
-                    <li><a href='https://docs.google.com/document/d/1HjBL_vIu-XNx_TOPfTl424TwRQ2L9Xuoxd2Xoh5dUok/edit'>BTDY Contender Rules</a></li>
-                    <li><a href='https://docs.google.com/document/d/185qQTQbcHqgipzCvJ1iPDCf7sqqEyYvoq2k3PBLqqog/edit'>BTDY Premier Rules</a></li>
-                </ul>
-            </p>
-            <p><em>Penalty Report</em></p>
-            <p>Under each series menu there is a link to the penalty report. This report will give information on all the current penalties issued across the season. Information like round number, track, driver name, and reason are displayed here.</p>
-            <p><em>Race Sessions</em></p>
-            <p>When navigating through a series, on the left hand side, will be the list of completed races for the season. You can click on any of those to see the results for that session. Information on these pages include high level information on the race like number of laps, cautions, etc. as well as information on each driver.</p>
+            <h5 class="mt-5">Features</h5>
+            <p><strong>Season Standings</strong><br />
+            Under each series menu item you can view the season standings of the most current season. Points are calculated according to the rules layed out in the official BTDY rules documents, linked on the sidebar</p>
+            <p><strong>Penalty Report</strong><br />
+            Under each series menu there is a link to the penalty report. This report will give information on all the current penalties issued across the season. Information like round number, track, driver name, and reason are displayed here.</p>
+            <p><strong>Race Sessions</strong><br />
+            When navigating through a series, on the left hand side, will be the list of completed races for the season. You can click on any of those to see the results for that session. Information on these pages include high level information on the race like number of laps, cautions, etc. as well as information on each driver.</p>
             <p>For each driver you will see some basic information like their start/finish position, number of incidents, etc. You will also see all the total points that the driver has earned for that race and a breakdown of that toal points. This is all same information that has been presented from previous seasons.</p>
-            <p><em>Drop Weeks</em></p>
-            <p>After 10 weeks drop weeks will start being applied to season results. For Contender two drop weeks will be applied and for Premier one will be per the rules. A drivers lowest <i>total</i> point race will be considered for drop week(s). A footnote will show after that 10 week period so at any point you can click on it to see which races are currently being dropped.</p>
+            <p><strong>Drop Weeks</strong><br />
+            After 10 weeks drop weeks will start being applied to season results. For Contender two drop weeks will be applied and for Premier one will be per the rules. A drivers lowest <em>total</em> point race will be considered for drop week(s). A footnote will show after that 10 week period so at any point you can click on it to see which races are currently being dropped.</p>
 
-            <h5>Admin Features</h5>
-            <p><em>Adding race data</em></p>
-            <p>When logging in you will be given an option to add a recently completed race. Filling out the form will pull the data from the iRacing service, perform the calculations based on the rules and selected bonuses, and store the data. Once complete you will be presented with sessions results for that race.</p>
-            <p><em>Modifying Race Results</em></p>
-            <p>On the session results page for any given race you can click on the name of the individual driver. This will take you to an edit screen where you can modify things like total points earned, payout ammounts, issue penalties, deleting records, and add notes. Issuing penalties will automatically populate the penalty report for that series.</p>
-            <p><em>Deleting Race Results</em></p>
-            <p>If something gets messed up with the whole session and you need to restart you can clear out the entire race session by clicking the delete race button. You can then re-pull the data with the Add Race form.</p>
+            
+
+            <h5 class="mt-5">Admin Features</h5>
+            <p><strong>Adding Race Data</strong><br />
+            When logging in you will be given an option to add a recently completed race. Filling out the form will pull the data from the iRacing service, perform the calculations based on the rules and selected bonuses, and store the data. Once complete you will be presented with sessions results for that race.</p>
+            <p><strong>Modifying Race Results</strong><br />
+            On the session results page for any given race you can click on the name of the individual driver. This will take you to an edit screen where you can modify things like total points earned, payout ammounts, issue penalties, deleting records, and add notes. Issuing penalties will automatically populate the penalty report for that series.</p>
+            <p><strong>Deleting Race Results</strong><br />
+            If something gets messed up with the whole session and you need to restart you can clear out the entire race session by clicking the delete race button. You can then re-pull the data with the Add Race form.</p>
 
             <hr />
 
@@ -37,3 +34,15 @@
         </div>
     </div>
 {% endblock content %}
+
+{% block sidebar %}
+    <div class="col-md-3">
+        <div class="content-section">
+            <h6>BTDY Rules</h6>
+            <ul>
+                <li><a href='https://docs.google.com/document/d/1HjBL_vIu-XNx_TOPfTl424TwRQ2L9Xuoxd2Xoh5dUok/edit' class='link-secondary'>BTDY Contender Rules</a></li>
+                <li><a href='https://docs.google.com/document/d/185qQTQbcHqgipzCvJ1iPDCf7sqqEyYvoq2k3PBLqqog/edit' class='link-secondary'>BTDY Premier Rules</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock sidebar %}
