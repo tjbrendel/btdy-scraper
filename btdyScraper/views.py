@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import raceSession, points
 from django.contrib import messages
-from .btdyScraper import grabRaceData, raceScraper, resultsScraper, sessionStandings
+from .btdyScraper import grabRaceData, raceScraper, resultsScraper, sessionStandings, calcDropWeeks, calcPrevDropWeeks
 from django.db.models import Avg, Max, Sum, Count
 from django.contrib.auth.decorators import login_required
 
@@ -226,19 +226,34 @@ def penalty(request, leagueID):
     
     return render(request, 'penalty.html', context)
 
-def dropWeeks(request):
-    nameList = points.objects.values('name').distinct()
-
+def dropWeeks(request, leagueID):
+    if leagueID == 5189:
+        #contender
+        seriesFilter = 'BTDY Contender Series'
+    elif leagueID == 4333:
+        #premier
+        seriesFilter = 'BTDY Premier Series'
+    nameList = points.objects.filter(subsessionID__series = seriesFilter).values('name').distinct()
+    maxRound = points.objects.filter(subsessionID__series = seriesFilter).aggregate(Max('roundNum')).get('roundNum__max')
     dropRaces = []
+
     for driver in nameList:
-        rows = points.objects.filter(name=driver['name']).order_by('totalPoints')[:2]
-        for row in rows:
-            dropRaces.append(row)
+        starts = points.objects.filter(name=driver['name'], subsessionID__series=seriesFilter).count()
+        if leagueID == 5189 and starts == maxRound:
+            rows = points.objects.filter(name=driver['name'], subsessionID__series=seriesFilter).order_by('totalPoints')[:2]
+            for row in rows:
+                dropRaces.append(row)
+        elif (leagueID == 5189 and starts == maxRound-1) or (leagueID == 4333 and starts == maxRound):
+            rows = points.objects.filter(name=driver['name'], subsessionID__series=seriesFilter).order_by('totalPoints')[:1]
+            for row in rows:
+                dropRaces.append(row)
     
     context = {
         'droppedRaces':dropRaces,
         'title':'Dropped Races',
-        'sessions':raceSession.objects.all().order_by('roundNum'),
+        'sessions':raceSession.objects.filter(series = seriesFilter).all().order_by('roundNum'),
+        'series': raceSession.objects.filter(series = seriesFilter).values("series").first(),
+        'leagueID': leagueID
     }
 
     return render(request, 'droppedRaces.html', context)
@@ -297,39 +312,31 @@ def seasonStandings(request, leagueID):
             )
             .annotate(
                 totalPoints = Sum('totalPoints'),
-                avgFinish = Avg('finishPosition')
+                avgFinish = Avg('finishPosition'),
+                starts = Count('startPosition')
             )
             .order_by('-totalPoints', 'avgFinish')
         )
 
         if maxRound > 10:
             for pointsRow in sessionPoints:
-                dropPoints = points.objects.filter(
-                    name = pointsRow['name'], 
-                    subsessionID__series = seriesFilter
-                ).all().order_by('totalPoints')[:2]
-
-                totalDrop = 0
-                for row in dropPoints:
-                    totalDrop = totalDrop + row.totalPoints
-                
-                pointsRow['totalPoints'] -= totalDrop
+                if leagueID == 5189 and pointsRow['starts'] == maxRound:
+                    totalDrop = calcDropWeeks(pointsRow, seriesFilter, 2)
+                    pointsRow['totalPoints'] -= totalDrop
+                elif (leagueID == 5189 and pointsRow['starts'] == maxRound-1) or (leagueID == 4333 and pointsRow['starts'] == maxRound):
+                    totalDrop = calcDropWeeks(pointsRow, seriesFilter, 1)
+                    pointsRow['totalPoints'] -= totalDrop
 
             for prevPointsRow in prevSession:
-                prevDropPoints = points.objects.filter(
-                    name = prevPointsRow['name'], 
-                    roundNum__lte = prevRound, 
-                    subsessionID__series = seriesFilter
-                ).all().order_by('totalPoints')[:2]
-
-                prevTotalDrop = 0
-                for row in prevDropPoints:
-                    prevTotalDrop = prevTotalDrop + row.totalPoints
-                
-                prevPointsRow['totalPoints'] -= prevTotalDrop
+                if leagueID == 5189 and prevPointsRow['starts'] == prevRound:
+                    prevTotalDrop = calcPrevDropWeeks(prevPointsRow, prevRound, seriesFilter, 2)
+                    prevPointsRow['totalPoints'] -= prevTotalDrop
+                elif (leagueID == 5189 and prevPointsRow['starts'] == prevRound-1) or (leagueID == 4333 and pointsRow['starts'] == prevRound):
+                    prevTotalDrop = calcPrevDropWeeks(prevPointsRow, prevRound, seriesFilter, 1)
+                    prevPointsRow['totalPoints'] -= prevTotalDrop
             
-            sessionPoints = sorted(sessionPoints, key=lambda o: o['totalPoints'], reverse=True)
-            prevSession = sorted(prevSession, key=lambda o: o['totalPoints'], reverse=True)
+            sessionPoints = sorted(sessionPoints, key=lambda o: (o['totalPoints'], -o['avgFinish']), reverse=True)
+            prevSession = sorted(prevSession, key=lambda o: (o['totalPoints'], -o['avgFinish']), reverse=True)
 
         seasonStandings = sessionStandings(sessionPoints, prevSession)
 

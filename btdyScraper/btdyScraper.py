@@ -2,6 +2,7 @@ import requests
 import json
 import hashlib
 import base64
+from .models import points
 
 with open("sensConfig/config.json") as file:
     config = json.load(file)
@@ -220,3 +221,28 @@ def sessionStandings(sessionPoints, prevSession):
         position['gapToCutoff'] = position['totalPoints'] - cutOffPoints
 
     return sessionPoints
+
+def calcDropWeeks(pointsRow, seriesFilter, numWeeksToDrop):
+    dropPoints = points.objects.filter(
+        name = pointsRow['name'], 
+        subsessionID__series = seriesFilter
+    ).all().order_by('totalPoints')[:numWeeksToDrop]
+
+    totalDrop = 0
+    for row in dropPoints:
+        totalDrop = totalDrop + row.totalPoints
+
+    return totalDrop
+
+def calcPrevDropWeeks(prevPointsRow, prevRound, seriesFilter, numWeeksToDrop):
+    prevDropPoints = points.objects.filter(
+        name = prevPointsRow['name'], 
+        roundNum__lte = prevRound, 
+        subsessionID__series = seriesFilter
+    ).all().order_by('totalPoints')[:numWeeksToDrop]
+
+    prevTotalDrop = 0
+    for row in prevDropPoints:
+        prevTotalDrop = prevTotalDrop + row.totalPoints
+    
+    return prevTotalDrop

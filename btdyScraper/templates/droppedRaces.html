@@ -3,7 +3,8 @@
 {% block content %}
     <div class="col-md-9">
         <div class="content-section">
-            <h4>Contender Series Dropped Races</h4>
+            <h4>{{ series.series }} Dropped Races</h4>
+            <p class="small text-muted ms-2"><em>Note: If you missed any races they will not display here.</em></p>
             <hr />
             
             <div class="table-responsive">
@@ -45,7 +46,7 @@
                     {% for session in sessions %}
                         <tr>
                             <td class="text-center">{{ session.roundNum }}</td>
-                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.subsessionID %}">{{ session.trackName }}</a></td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' leagueID session.subsessionID %}">{{ session.trackName }}</a></td>
                         </tr>
                     {% endfor %}
                 {% else %}
