@@ -2,7 +2,7 @@ import requests
 import json
 import hashlib
 import base64
-from .models import points
+from .models import points, league
 
 with open("sensConfig/config.json") as file:
     config = json.load(file)
@@ -246,3 +246,10 @@ def calcPrevDropWeeks(prevPointsRow, prevRound, seriesFilter, numWeeksToDrop):
         prevTotalDrop = prevTotalDrop + row.totalPoints
     
     return prevTotalDrop
+
+def leagueOwnerCheck(user, leagueUrl):
+    leagueOwnerCheck = league.objects.get(leagueUrl=leagueUrl)
+    if user.username == leagueOwnerCheck.leagueOwner.username:
+        return True
+    else:
+        return False

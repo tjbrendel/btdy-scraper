@@ -4,20 +4,17 @@
     <div class="col-md-9">
         <div class="content-section">
             <h4>Add Race Data</h4>
+        </div>
+
+        <div class="content-section">
+            <p>To add data to {{ series.seriesName }} please fill out the form below</p>
             <hr />
+            
             <form method="POST" id="addForm">
                 {% csrf_token %}
                 <div class="mb-3 mt-3">
                     <label class="form-label">Subsession ID:</label>
                     <input class="form-control" id="subsessionID" placeholder="Enter Subsession ID" name="subsessionID" pattern="[0-9]{8}" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Series:</label>
-                    <select class="form-select" id="series" name="series" required>
-                        <option value="BTDY Contender Series">BTDY Contender Series</option>
-                        <option value="BTDY Premier Series">BTDY Premier Series</option>
-                    </select>
                 </div>
 
                 <div class="mb-3">
@@ -110,7 +107,7 @@
 {% block sidebar %}
     <div class="col-md-3">
         <div class="content-section">
-            <h6>Contender Race Sessions</h6>
+            <h6>{{ series.seriesName }} Race Sessions</h6>
             <table class="table table-sm small">
                 <thead>
                     <tr>
@@ -120,38 +117,10 @@
                 </thead>
                 {% if sessions != "No Races Yet!"%}
                     {% for session in sessions %}
-                        {% if session.series == "BTDY Contender Series" %}
-                            <tr>
-                                <td class="text-center">{{ session.roundNum }}</td>
-                                <td><a class="link-secondary" href="{% url 'btdyScraper-session' 5189 session.subsessionID %}">{{ session.trackName }}</a></td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td>{{ sessions }}</td>
-                    </tr>
-                {% endif %}
-            </table>
-        </div>
-
-        <div class="content-section">
-            <h6>Premier Race Sessions</h6>
-            <table class="table table-sm small">
-                <thead>
-                    <tr>
-                        <th>Round</th>
-                        <th>Track</th>
-                    </tr>
-                </thead>
-                {% if sessions != "No Races Yet!"%}
-                    {% for session in sessions %}
-                        {% if session.series == "BTDY Premier Series" %}    
-                            <tr>
-                                <td class="text-center">{{ session.roundNum }}</td>
-                                <td><a class="link-secondary" href="{% url 'btdyScraper-session' 4333 session.subsessionID %}">{{ session.trackName }}</a></td>
-                            </tr>
-                        {% endif %}
+                        <tr>
+                            <td class="text-center">{{ session.roundNum }}</td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.seriesID.leagueID.leagueUrl session.seriesID.seriesUrl session.subsessionID %}">{{ session.trackName }}</a></td>
+                        </tr>
                     {% endfor %}
                 {% else %}
                     <tr>

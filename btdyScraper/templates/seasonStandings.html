@@ -3,7 +3,7 @@
 {% block content %}
     <div class="col-md-9">
         <div class="content-section">
-            <h4>{{ series.series }} Standings</h4>
+            <h4>{{ series.seriesName }} Standings</h4>
             {% if maxRound > 10 %}
                 <p class="small text-muted ms-2"><em>Note: After round 10 total points will be calculated with 2 drop weeks. For a list of dropped races <a class="link-secondary" href="{% url 'btdyScraper-drop' leagueID %}">go here</a>.</em></p>
             {% endif %}
@@ -92,7 +92,7 @@
                     {% for session in sessions %}
                         <tr>
                             <td class="text-center">{{ session.roundNum }}</td>
-                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' leagueID session.subsessionID %}">{{ session.trackName }}</a></td>
+                            <td><a class="link-secondary" href="{% url 'btdyScraper-session' session.seriesID.leagueID.leagueUrl session.seriesID.seriesUrl session.subsessionID %}">{{ session.trackName }}</a></td>
                         </tr>
                     {% endfor %}
                 {% else %}

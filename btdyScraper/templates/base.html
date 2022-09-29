@@ -34,22 +34,23 @@
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle ms-2" href="#" id="contenderDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Contender Series</a>
                                     <ul class="dropdown-menu bg-dark" aria-labelledby="contenderDropDown">
-                                        <li><a class="nav-item nav-link" href="{% url 'btdyScraper-seasonStandings' 5189 %}">Season Standings</a></li>
-                                        <li><a class="nav-item nav-link" href="{% url 'btdyScraper-penalty' 5189 %}">Penalty Report</a></li>
+                                        <li><a class="nav-item nav-link" href="{% url 'btdyScraper-seasonStandings' 'below-the-double-yellow' 'btdy-contender-series' %}">Season Standings</a></li>
+                                        <li><a class="nav-item nav-link" href="{% url 'btdyScraper-penalty' 'below-the-double-yellow' 'btdy-contender-series' %}">Penalty Report</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle ms-2" href="#" id="premierDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Premier Series</a>
                                     <ul class="dropdown-menu bg-dark" aria-labelledby="premierDropDown">
-                                        <li><a class="nav-item nav-link" href="{% url 'btdyScraper-seasonStandings' 4333 %}">Season Standings</a></li>
-                                        <li><a class="nav-item nav-link" href="{% url 'btdyScraper-penalty' 4333 %}">Penalty Report</a></li>
+                                        <li><a class="nav-item nav-link" href="{% url 'btdyScraper-seasonStandings' 'below-the-double-yellow' 'btdy-premier-series' %}">Season Standings</a></li>
+                                        <li><a class="nav-item nav-link" href="{% url 'btdyScraper-penalty' 'below-the-double-yellow' 'btdy-premier-series' %}">Penalty Report</a></li>
                                     </ul>
                                 </li>
                             </ul>
                         </div>
                         <div class="navbar-nav ms-auto">
                             {% if user.is_authenticated %}
-                                <a class="nav-item nav-link" href="{% url 'btdyScraper-add' %}">Add a Race</a>
+                                <a class="nav-item nav-link" href="#">Quick Add</a>
+                                <a class="nav-item nav-link" href="{% url 'btdyScraper-profile' %}">Admin</a>
                                 <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                             {% else %}
                                 <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>

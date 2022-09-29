@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-md-9">
+        <div class="content-section">
+            <h4>Add Admin to Series</h4>
+            <hr />
+            <form method="POST" id="addAdminForm">
+                {% csrf_token %}
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Admin User Name:</label>
+                    <input class="form-control" id="adminUserName" placeholder="Enter Admin User Name" name="adminUserName" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="btnFetch">Submit</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,6 +1,21 @@
-from sys import set_asyncgen_hooks
+from django.conf import settings
 from django.db import models
+class league(models.Model):
+    leagueName = models.CharField(max_length=50)
+    leagueOwner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    leagueUrl = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.leagueName
+class series(models.Model):
+    seriesName = models.CharField(max_length=50)
+    seriesUrl = models.CharField(max_length=50)
+    leagueID = models.ForeignKey(league, on_delete=models.CASCADE)
+    admins = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    pointsConfig = models.CharField(max_length=50)
+    payoutFlag = models.IntegerField(default=0)
+    bonusFlag = models.IntegerField(default=0)
+    payoutConfig = models.CharField(max_length=50)
 class raceSession(models.Model):
     subsessionID = models.IntegerField(primary_key=True)
     raceDate = models.CharField(max_length=10)
@@ -11,7 +26,7 @@ class raceSession(models.Model):
     cautionLaps = models.IntegerField()
     greenLaps = models.IntegerField()
     totalLaps = models.IntegerField()
-    series = models.CharField(max_length=50)
+    seriesID = models.ForeignKey(series, on_delete=models.CASCADE, null=True, blank=True)
     season = models.IntegerField()
     roundNum = models.IntegerField()
 

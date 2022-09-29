@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-md-9">
+        <div class="content-section">
+            <h4>Create a Series</h4>
+            <hr />
+            <form method="POST" id="addSeriesForm">
+                {% csrf_token %}
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Series Name:</label>
+                    <input class="form-control" id="seriesName" placeholder="Enter Series Name" name="seriesName" required>
+                </div>
+
+                <p>Select the features for this series:</p>
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="payouts" name="payouts">
+                    <label class="form-check-label" for="penalty">Payouts</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="bonuses" name="bonuses">
+                    <label class="form-check-label" for="penalty">Bonuses</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="btnFetch">Submit</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
