@@ -10,5 +10,6 @@ urlpatterns = [
     path('penalty/<int:leagueID>', views.penalty, name='btdyScraper-penalty'),
     path('dropweeks/<int:leagueID>', views.dropWeeks, name='btdyScraper-drop'),
     path('droprecord/<int:id>/', views.deleteRecord, name='btdyScraper-dropRecord'),
-    path('season-standings/<int:leagueID>', views.seasonStandings, name='btdyScraper-seasonStandings')
+    path('season-standings/<int:leagueID>', views.seasonStandings, name='btdyScraper-seasonStandings'),
+    path('series-stats/', views.seriesStats, name='btdyScraper-seriesStats')
 ]
