@@ -349,3 +349,9 @@ def seasonStandings(request, leagueID):
         }
 
         return render(request, 'seasonStandings.html', context)
+
+def seriesStats(request):
+    context = {
+        'title': 'Series Stats'
+    }
+    return render(request, 'seriesStats.html', context)
