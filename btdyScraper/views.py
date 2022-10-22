@@ -320,7 +320,7 @@ def seasonStandings(request, leagueID):
 
         if maxRound > 10:
             for pointsRow in sessionPoints:
-                if leagueID == 4333 and pointsRow['totalPoints'] > 4999:
+                if leagueID == 4333 and pointsRow['totalPoints'] > 999:
                     pointsRow['totalPoints'] += pointsRow['wins'] * 10
                 elif leagueID == 5189 and pointsRow['starts'] == maxRound:
                     totalDrop = calcDropWeeks(pointsRow, seriesFilter, 2)
