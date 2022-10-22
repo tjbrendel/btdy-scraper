@@ -320,7 +320,9 @@ def seasonStandings(request, leagueID):
 
         if maxRound > 10:
             for pointsRow in sessionPoints:
-                if leagueID == 5189 and pointsRow['starts'] == maxRound:
+                if leagueID == 4333 and pointsRow['totalPoints'] > 4999:
+                    pointsRow['totalPoints'] += pointsRow['wins'] * 10
+                elif leagueID == 5189 and pointsRow['starts'] == maxRound:
                     totalDrop = calcDropWeeks(pointsRow, seriesFilter, 2)
                     pointsRow['totalPoints'] -= totalDrop
                 elif (leagueID == 5189 and pointsRow['starts'] == maxRound-1) or (leagueID == 4333 and pointsRow['starts'] == maxRound):
@@ -328,7 +330,9 @@ def seasonStandings(request, leagueID):
                     pointsRow['totalPoints'] -= totalDrop
 
             for prevPointsRow in prevSession:
-                if leagueID == 5189 and prevPointsRow['starts'] == prevRound:
+                if pointsRow['totalPoints'] > 999:
+                    pointsRow['totalPoints'] += pointsRow['wins'] * 10
+                elif leagueID == 5189 and prevPointsRow['starts'] == prevRound:
                     prevTotalDrop = calcPrevDropWeeks(prevPointsRow, prevRound, seriesFilter, 2)
                     prevPointsRow['totalPoints'] -= prevTotalDrop
                 elif (leagueID == 5189 and prevPointsRow['starts'] == prevRound-1) or (leagueID == 4333 and pointsRow['starts'] == prevRound):
