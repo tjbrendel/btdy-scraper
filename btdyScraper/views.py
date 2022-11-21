@@ -268,6 +268,7 @@ def deleteRecord(request, id):
     return redirect(next)
 
 def seasonStandings(request, leagueID):
+    title = 'Series Standings'
     if leagueID == 5189:
         #contender
         seriesFilter = 'BTDY Contender Series'
@@ -320,8 +321,8 @@ def seasonStandings(request, leagueID):
 
         if maxRound > 10:
             for pointsRow in sessionPoints:
-                if leagueID == 4333 and pointsRow['totalPoints'] > 999:
-                    pointsRow['totalPoints'] += pointsRow['wins'] * 10
+                if pointsRow['totalPoints'] > 999:
+                    pointsRow['totalPoints']
                 elif leagueID == 5189 and pointsRow['starts'] == maxRound:
                     totalDrop = calcDropWeeks(pointsRow, seriesFilter, 2)
                     pointsRow['totalPoints'] -= totalDrop
@@ -331,7 +332,7 @@ def seasonStandings(request, leagueID):
 
             for prevPointsRow in prevSession:
                 if pointsRow['totalPoints'] > 999:
-                    pointsRow['totalPoints'] += pointsRow['wins'] * 10
+                    pointsRow['totalPoints']
                 elif leagueID == 5189 and prevPointsRow['starts'] == prevRound:
                     prevTotalDrop = calcPrevDropWeeks(prevPointsRow, prevRound, seriesFilter, 2)
                     prevPointsRow['totalPoints'] -= prevTotalDrop
@@ -349,7 +350,8 @@ def seasonStandings(request, leagueID):
             'seasonStandings':seasonStandings,
             'maxRound': maxRound,
             'series': raceSession.objects.filter(series = seriesFilter).values("series").first(),
-            'leagueID': leagueID
+            'leagueID': leagueID,
+            'title': title
         }
 
         return render(request, 'seasonStandings.html', context)
